@@ -1,0 +1,207 @@
+/* General reset for consistent styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+}
+
+header h1 {
+    font-size: 2rem;
+}
+
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+section h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #4CAF50;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+form label {
+    font-weight: bold;
+}
+
+form input, form button {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+form input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+form button {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+ul {
+    list-style-type: none;
+    margin-top: 15px;
+    padding: 0;
+}
+
+ul li {
+    background: #f4f4f4;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+#product-details {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f4f4f4;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+#product-details pre {
+    overflow-x: auto;
+}
+
+@media (max-width: 600px) {
+    body {
+        margin: 10px;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    form input, form button {
+        font-size: 0.9rem;
+    }
+
+    button {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* Header Style */
+header.unique-header {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+header.unique-header .header_main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+header.unique-header .logo {
+    max-width: 150px; /* Adjust the logo size */
+    height: auto;
+}
+
+header.unique-header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px; /* Space between navigation items */
+}
+
+header.unique-header nav ul li {
+    display: inline;
+    background-color: #333;
+}
+
+header.unique-header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 15px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header.unique-header nav ul li a:hover {
+    background-color: #555;
+    color: #ff9800; /* Change color on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header.unique-header .header_main {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header.unique-header nav ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    header.unique-header .logo {
+        margin-bottom: 20px;
+    }
+}

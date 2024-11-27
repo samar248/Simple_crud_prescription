@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescriber Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Prescriber Management</h1>
+    </header>
+    <main>
+        <!-- Add Prescriber -->
+        <section>
+            <h2>Add Prescriber</h2>
+            <form id="add-prescriber-form">
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" required>
+
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+
+                <label for="registration-number">Registration Number:</label>
+                <input type="text" id="registration-number" required>
+
+                <label for="signature">Signature:</label>
+                <input type="text" id="signature" required>
+
+                <label for="created-by">Created By:</label>
+                <input type="text" id="created-by">
+
+                <button type="submit">Add Prescriber</button>
+            </form>
+        </section>
+
+        <!-- Get Prescriber by ID -->
+        <section>
+            <h2>Get Prescriber by ID</h2>
+            <form id="get-prescriber-form">
+                <label for="prescriber-id">Prescriber ID:</label>
+                <input type="number" id="prescriber-id" required>
+                <button type="submit">Get Prescriber</button>
+            </form>
+            <pre id="prescriber-details"></pre>
+        </section>
+
+        <!-- Get All Prescribers -->
+        <section>
+            <h2>All Prescribers</h2>
+            <button id="get-all-prescribers">Get All Prescribers</button>
+            <ul id="all-prescribers"></ul>
+        </section>
+
+        <!-- Update Prescriber -->
+        <section>
+            <h2>Update Prescriber</h2>
+            <form id="update-prescriber-form">
+                <label for="update-prescriber-id">Prescriber ID:</label>
+                <input type="number" id="update-prescriber-id" required>
+
+                <label for="update-first-name">First Name:</label>
+                <input type="text" id="update-first-name">
+
+                <label for="update-last-name">Last Name:</label>
+                <input type="text" id="update-last-name">
+
+                <label for="update-email">Email:</label>
+                <input type="email" id="update-email">
+
+                <label for="update-registration-number">Registration Number:</label>
+                <input type="text" id="update-registration-number">
+
+                <label for="update-signature">Signature:</label>
+                <input type="text" id="update-signature">
+
+                <label for="update-updated-by">Updated By:</label>
+                <input type="text" id="update-updated-by">
+
+                <button type="submit">Update Prescriber</button>
+            </form>
+        </section>
+
+        <!-- Delete Prescriber -->
+        <section>
+            <h2>Delete Prescriber</h2>
+            <form id="delete-prescriber-form">
+                <label for="delete-prescriber-id">Prescriber ID:</label>
+                <input type="number" id="delete-prescriber-id" required>
+                <button type="submit">Delete Prescriber</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const apiBaseUrl = '/';
+
+        // Add Prescriber
+        document.getElementById('add-prescriber-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                first_name: document.getElementById('first-name').value,
+                last_name: document.getElementById('last-name').value,
+                email: document.getElementById('email').value,
+                registration_number: document.getElementById('registration-number').value,
+                signature: document.getElementById('signature').value,
+                created_by: document.getElementById('created-by').value,
+            };
+
+            const response = await fetch(`${apiBaseUrl}add-prescriber`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            alert(response.ok ? 'Prescriber added successfully!' : 'Failed to add prescriber.');
+        });
+
+        // Get Prescriber by ID
+        document.getElementById('get-prescriber-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const prescriberId = document.getElementById('prescriber-id').value;
+
+            const response = await fetch(`${apiBaseUrl}prescriber/${prescriberId}`);
+            const prescriber = await response.json();
+
+            const details = document.getElementById('prescriber-details');
+            details.innerText = response.ok ? JSON.stringify(prescriber, null, 2) : 'Prescriber not found.';
+        });
+
+        // Get All Prescribers
+        document.getElementById('get-all-prescribers').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}prescribers`);
+                const contentType = response.headers.get("content-type");
+
+                // Check if the response is JSON
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Expected JSON, but got " + contentType);
+                }
+
+                const prescribers = await response.json();
+                const list = document.getElementById('all-prescribers');
+                list.innerHTML = '';
+                if (Array.isArray(prescribers) && prescribers.length > 0) {
+                    prescribers.forEach((prescriber) => {
+                        const item = document.createElement('li');
+                        item.textContent = `${prescriber.id}: ${prescriber.first_name} ${prescriber.last_name} (${prescriber.email})`;
+                        list.appendChild(item);
+                    });
+                } else {
+                    list.innerHTML = '<li>No prescribers found.</li>';
+                }
+            } catch (error) {
+                console.error("Error fetching prescribers:", error);
+                const list = document.getElementById('all-prescribers');
+                list.innerHTML = `<li>Error: ${error.message}</li>`;
+            }
+        });
+
+        // Update Prescriber
+        document.getElementById('update-prescriber-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const prescriberId = document.getElementById('update-prescriber-id').value;
+            const data = {
+                first_name: document.getElementById('update-first-name').value,
+                last_name: document.getElementById('update-last-name').value,
+                email: document.getElementById('update-email').value,
+                registration_number: document.getElementById('update-registration-number').value,
+                signature: document.getElementById('update-signature').value,
+                updated_by: document.getElementById('update-updated-by').value,
+            };
+
+            const response = await fetch(`${apiBaseUrl}prescriber/${prescriberId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            alert(response.ok ? 'Prescriber updated successfully!' : 'Failed to update prescriber.');
+        });
+
+        // Delete Prescriber
+        document.getElementById('delete-prescriber-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const prescriberId = document.getElementById('delete-prescriber-id').value;
+
+            const response = await fetch(`${apiBaseUrl}del_prescriber/${prescriberId}`, {
+                method: 'DELETE',
+            });
+
+            alert(response.ok ? 'Prescriber deleted successfully!' : 'Failed to delete prescriber.');
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

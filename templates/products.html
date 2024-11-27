@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Product Management System{% endblock %}
+
+{% block content %}
+    <header>
+        <h1>Product Management</h1>
+    </header>
+    <main>
+        <!-- Add Product -->
+        <section>
+            <h2>Add Product</h2>
+            <form id="add-product-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+                <label for="cost_price">Cost Price:</label>
+                <input type="number" id="cost_price" step="0.01" required>
+                <label for="retail_price">Retail Price:</label>
+                <input type="number" id="retail_price" step="0.01" required>
+                <label for="sale_price">Sale Price (YYYY-MM-DD):</label>
+                <input type="text" id="sale_price">
+                <label for="is_pom">Is POM (1/0):</label>
+                <input type="number" id="is_pom" min="0" max="1">
+                <label for="created_by">Created By:</label>
+                <input type="text" id="created_by">
+                <button type="submit">Add Product</button>
+            </form>
+        </section>
+
+        <!-- Get Product by ID -->
+        <section>
+            <h2>Get Product by ID</h2>
+            <form id="get-product-form">
+                <label for="product-id">Product ID:</label>
+                <input type="number" id="product-id" required>
+                <button type="submit">Get Product</button>
+            </form>
+            <div id="product-details"></div>
+        </section>
+
+        <!-- Get All Products -->
+        <section>
+            <h2>All Products</h2>
+            <button id="get-all-products">Get All Products</button>
+            <ul id="all-products"></ul>
+        </section>
+
+        <!-- Update Product -->
+        <section>
+            <h2>Update Product</h2>
+            <form id="update-product-form">
+                <label for="update-product-id">Product ID:</label>
+                <input type="number" id="update-product-id" required>
+                <label for="update-name">New Name:</label>
+                <input type="text" id="update-name">
+                <label for="update-cost-price">New Cost Price:</label>
+                <input type="number" id="update-cost-price" step="0.01">
+                <label for="update-retail-price">New Retail Price:</label>
+                <input type="number" id="update-retail-price" step="0.01">
+                <label for="update-sale-price">New Sale Price (YYYY-MM-DD):</label>
+                <input type="text" id="update-sale-price">
+                <label for="update-is-pom">New Is POM (1/0):</label>
+                <input type="number" id="update-is-pom" min="0" max="1">
+                <label for="update-updated-by">Updated By:</label>
+                <input type="text" id="update-updated-by">
+                <button type="submit">Update Product</button>
+            </form>
+        </section>
+
+        <!-- Delete Product -->
+        <section>
+            <h2>Delete Product</h2>
+            <form id="delete-product-form">
+                <label for="delete-product-id">Product ID:</label>
+                <input type="number" id="delete-product-id" required>
+                <button type="submit">Delete Product</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const apiBaseUrl = '/'; // Base URL for the API
+
+        // Add Product
+        document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('name').value,
+                cost_price: parseFloat(document.getElementById('cost_price').value),
+                retail_price: parseFloat(document.getElementById('retail_price').value),
+                sale_price: document.getElementById('sale_price').value || null,
+                is_pom: parseInt(document.getElementById('is_pom').value) || 0,
+                created_by: document.getElementById('created_by').value || null
+            };
+
+            const response = await fetch(`${apiBaseUrl}add-product`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            alert(response.ok ? 'Product added successfully!' : 'Failed to add product.');
+        });
+
+        // Get Product by ID
+        document.getElementById('get-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const productId = document.getElementById('product-id').value;
+
+            const response = await fetch(`${apiBaseUrl}get-product/${productId}`);
+            const product = await response.json();
+
+            const details = document.getElementById('product-details');
+            details.innerText = response.ok ? JSON.stringify(product, null, 2) : 'Product not found.';
+        });
+
+        // Get All Products
+        document.getElementById('get-all-products').addEventListener('click', async () => {
+            const response = await fetch(`${apiBaseUrl}get-products`);
+            const products = await response.json();
+
+            const list = document.getElementById('all-products');
+            list.innerHTML = '';
+            if (response.ok) {
+                products.forEach(product => {
+                    const item = document.createElement('li');
+                    item.textContent = `${product.id}: ${product.name} - $${product.retail_price}`;
+                    list.appendChild(item);
+                });
+            } else {
+                list.innerText = 'No products found.';
+            }
+        });
+
+        // Update Product
+        document.getElementById('update-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const productId = document.getElementById('update-product-id').value;
+            const data = {
+                name: document.getElementById('update-name').value,
+                cost_price: parseFloat(document.getElementById('update-cost-price').value) || null,
+                retail_price: parseFloat(document.getElementById('update-retail-price').value) || null,
+                sale_price: document.getElementById('update-sale-price').value || null,
+                is_pom: parseInt(document.getElementById('update-is-pom').value) || 0,
+                updated_by: document.getElementById('update-updated-by').value || null
+            };
+
+            const response = await fetch(`${apiBaseUrl}update-product/${productId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            alert(response.ok ? 'Product updated successfully!' : 'Failed to update product.');
+        });
+
+        // Delete Product
+        document.getElementById('delete-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const productId = document.getElementById('delete-product-id').value;
+
+            const response = await fetch(`${apiBaseUrl}delete-product/${productId}`, {
+                method: 'DELETE'
+            });
+
+            alert(response.ok ? 'Product deleted successfully!' : 'Failed to delete product.');
+        });
+    </script>
+{% endblock %}

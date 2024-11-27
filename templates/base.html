@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>{% block title %}My Flask App{% endblock %}</title>
+</head>
+<body>
+    <header class="unique-header">
+        <div class="header_main">
+            <h1>FLASK</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/products">Products</a></li>
+                    <li><a href="/patients">Patients</a></li>
+                    <li><a href="/prescribers">Prescribers</a></li>
+                    <li><a href="#">Prescriptions</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 My Flask App. All rights reserved.</p>
+    </footer>
+</body>
+</html>
