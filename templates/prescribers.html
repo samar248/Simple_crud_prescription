@@ -137,7 +137,7 @@
         // Get All Prescribers
         document.getElementById('get-all-prescribers').addEventListener('click', async () => {
             try {
-                const response = await fetch(`${apiBaseUrl}prescribers`);
+                const response = await fetch(`${apiBaseUrl}get-prescribers`);
                 const contentType = response.headers.get("content-type");
 
                 // Check if the response is JSON

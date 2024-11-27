@@ -28,7 +28,9 @@ def prescribers():
 @app.route("/patients")
 def patients():
     return render_template("patients.html")
-
+@app.route("/prescriptions")
+def prescriptions():
+    return render_template("prescriptions.html")
 
 
 ################ this is products crud endpoints #################
