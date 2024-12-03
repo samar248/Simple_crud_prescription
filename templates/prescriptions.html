@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Prescription Management</h1>
+    </header>
+    <main>
+        <!-- Add Prescription Header -->
+        <section>
+            <h2>Add Prescription Header</h2>
+            <form id="add-prescription-header-form">
+                <label for="patient-id">Patient ID:</label>
+                <input type="number" id="patient-id" required>
+
+                <label for="prescriber-id">Prescriber ID:</label>
+                <input type="number" id="prescriber-id" required>
+
+                <label for="created-by">Created By:</label>
+                <input type="text" id="created-by">
+
+                <button type="submit">Add Prescription Header</button>
+            </form>
+        </section>
+
+        <!-- Get All Prescription Headers -->
+        <section>
+            <h2>Get All Prescription Headers</h2>
+            <button id="get-all-prescription-headers">Get All Headers</button>
+            <ul id="all-prescription-headers"></ul>
+        </section>
+
+        <!-- Update Prescription Header -->
+        <section>
+            <h2>Update Prescription Header</h2>
+            <form id="update-prescription-header-form">
+                <label for="update-header-id">Header ID:</label>
+                <input type="number" id="update-header-id" required>
+
+                <label for="update-patient-id">Patient ID:</label>
+                <input type="number" id="update-patient-id">
+
+                <label for="update-prescriber-id">Prescriber ID:</label>
+                <input type="number" id="update-prescriber-id">
+
+                <label for="update-created-by">Created By:</label>
+                <input type="text" id="update-created-by">
+
+                <button type="submit">Update Prescription Header</button>
+            </form>
+        </section>
+
+        <!-- Delete Prescription Header -->
+        <section>
+            <h2>Delete Prescription Header</h2>
+            <form id="delete-prescription-header-form">
+                <label for="delete-header-id">Header ID:</label>
+                <input type="number" id="delete-header-id" required>
+                <button type="submit">Delete Header</button>
+            </form>
+        </section>
+
+        <!-- Add Prescription Line -->
+        <section>
+            <h2>Add Prescription Line</h2>
+            <form id="add-prescription-line-form">
+                <label for="product-id">Product ID:</label>
+                <input type="number" id="product-id" required>
+
+                <label for="prescription-id">Prescription ID:</label>
+                <input type="number" id="prescription-id" required>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" required>
+
+                <label for="price">Price:</label>
+                <input type="number" step="0.01" id="price" required>
+
+                <label for="directions">Directions:</label>
+                <textarea id="directions"></textarea>
+
+                <button type="submit">Add Prescription Line</button>
+            </form>
+        </section>
+
+        <!-- Get All Prescription Lines -->
+        <section>
+            <h2>Get All Prescription Lines</h2>
+            <button id="get-all-prescription-lines">Get All Lines</button>
+            <ul id="all-prescription-lines"></ul>
+        </section>
+
+        <!-- Update Prescription Line -->
+        <section>
+            <h2>Update Prescription Line</h2>
+            <form id="update-prescription-line-form">
+                <label for="update-line-id">Line ID:</label>
+                <input type="number" id="update-line-id" required>
+
+                <label for="update-product-id">Product ID:</label>
+                <input type="number" id="update-product-id">
+
+                <label for="update-prescription-id">Prescription ID:</label>
+                <input type="number" id="update-prescription-id">
+
+                <label for="update-quantity">Quantity:</label>
+                <input type="number" id="update-quantity">
+
+                <label for="update-price">Price:</label>
+                <input type="number" step="0.01" id="update-price">
+
+                <label for="update-directions">Directions:</label>
+                <textarea id="update-directions"></textarea>
+
+                <button type="submit">Update Prescription Line</button>
+            </form>
+        </section>
+
+        <!-- Delete Prescription Line -->
+        <section>
+            <h2>Delete Prescription Line</h2>
+            <form id="delete-prescription-line-form">
+                <label for="delete-line-id">Line ID:</label>
+                <input type="number" id="delete-line-id" required>
+                <button type="submit">Delete Line</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        const apiBaseUrl = '/'; // Base URL for the API
+
+        // Add Prescription Header
+        document.getElementById('add-prescription-header-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                patient_id: parseInt(document.getElementById('patient-id').value),
+                prescriber_id: parseInt(document.getElementById('prescriber-id').value),
+                created_by: document.getElementById('created-by').value || null,
+            };
+
+            const response = await fetch(`${apiBaseUrl}prescription-headers`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            alert(response.ok ? 'Prescription header added successfully!' : 'Failed to add prescription header.');
+        });
+
+        // Get All Prescription Headers
+        document.getElementById('get-all-prescription-headers').addEventListener('click', async () => {
+            const response = await fetch(`${apiBaseUrl}get-prescription-headers`);
+            const headers = await response.json();
+
+            const list = document.getElementById('all-prescription-headers');
+            list.innerHTML = '';
+            if (response.ok) {
+                headers.forEach((header) => {
+                    const item = document.createElement('li');
+                    item.textContent = `ID: ${header.id}, Patient ID: ${header.patient_id}, Prescriber ID: ${header.prescriber_id}, Created By: ${header.created_by}`;
+                    list.appendChild(item);
+                });
+            } else {
+                list.innerText = 'No prescription headers found.';
+            }
+        });
+
+        // Update Prescription Header
+        document.getElementById('update-prescription-header-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const headerId = parseInt(document.getElementById('update-header-id').value);
+            const data = {
+                patient_id: parseInt(document.getElementById('update-patient-id').value) || null,
+                prescriber_id: parseInt(document.getElementById('update-prescriber-id').value) || null,
+                created_by: document.getElementById('update-created-by').value || null,
+            };
+
+            const response = await fetch(`${apiBaseUrl}prescription-headers/${headerId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            alert(response.ok ? 'Prescription header updated successfully!' : 'Failed to update prescription header.');
+        });
+
+        // Delete Prescription Header
+        document.getElementById('delete-prescription-header-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const headerId = parseInt(document.getElementById('delete-header-id').value);
+
+            const response = await fetch(`${apiBaseUrl}prescription-headers/${headerId}`, {
+                method: 'DELETE',
+            });
+
+            alert(response.ok ? 'Prescription header deleted successfully!' : 'Failed to delete prescription header.');
+        });
+
+        // Add Prescription Line
+        document.getElementById('add-prescription-line-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                product_id: parseInt(document.getElementById('product-id').value),
+                prescription_id: parseInt(document.getElementById('prescription-id').value),
+                quantity: parseInt(document.getElementById('quantity').value),
+                price: parseFloat(document.getElementById('price').value),
+                directions: document.getElementById('directions').value || null,
+            };
+
+            const response = await fetch(`${apiBaseUrl}prescription-lines`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            alert(response.ok ? 'Prescription line added successfully!' : 'Failed to add prescription line.');
+        });
+
+        // Get All Prescription Lines
+        document.getElementById('get-all-prescription-lines').addEventListener('click', async () => {
+            const response = await fetch(`${apiBaseUrl}get-prescription-lines`);
+            const lines = await response.json();
+
+            const list = document.getElementById('all-prescription-lines');
+            list.innerHTML = '';
+            if (response.ok) {
+                lines.forEach((line) => {
+                    const item = document.createElement('li');
+                    item.textContent = `ID: ${line.id}, Product ID: ${line.product_id}, Prescription ID: ${line.prescription_id}, Quantity: ${line.quantity}, Price: ${line.price}`;
+                    list.appendChild(item);
+                });
+            } else {
+                list.innerText = 'No prescription lines found.';
+            }
+        });
+
+        // Update Prescription Line
+        document.getElementById('update-prescription-line-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const lineId = parseInt(document.getElementById('update-line-id').value);
+            const data = {
+                product_id: parseInt(document.getElementById('update-product-id').value) || null,
+                prescription_id: parseInt(document.getElementById('update-prescription-id').value) || null,
+                quantity: parseInt(document.getElementById('update-quantity').value) || null,
+                price: parseFloat(document.getElementById('update-price').value) || null,
+                directions: document.getElementById('update-directions').value || null,
+            };
+
+            const response = await fetch(`${apiBaseUrl}prescription-lines/${lineId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            alert(response.ok ? 'Prescription line updated successfully!' : 'Failed to update prescription line.');
+        });
+
+        // Delete Prescription Line
+        document.getElementById('delete-prescription-line-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const lineId = parseInt(document.getElementById('delete-line-id').value);
+
+            const response = await fetch(`${apiBaseUrl}prescription-lines/${lineId}`, {
+                method: 'DELETE',
+            });
+
+            alert(response.ok ? 'Prescription line deleted successfully!' : 'Failed to delete prescription line.');
+        });
+    </script>
+</body>
+</html>
+{% endblock %}
